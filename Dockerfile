@@ -1,5 +1,8 @@
 # Use the official Node.js image as the base image
-FROM node:14
+FROM node:22-alpine
+
+# Install pnpm
+RUN npm install -g pnpm
 
 # Set the working directory
 WORKDIR /app
@@ -8,7 +11,7 @@ WORKDIR /app
 COPY package.json ./
 
 # Install dependencies
-RUN npm install
+RUN pnpm install
 
 # Copy the rest of the application code
 COPY src ./src
@@ -20,4 +23,4 @@ ENV PORT=3000
 EXPOSE 3000
 
 # Command to run the application
-CMD ["node", "src/index.js"]
+CMD ["pnpm", "start"]
