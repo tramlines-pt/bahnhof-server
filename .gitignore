@@ -40,9 +40,6 @@ jspm_packages/
 *.sln
 *.sw?
 
-# Docker
-
-docker-compose.override.yml
 
 # Tramlines Specific
 .tramlines/

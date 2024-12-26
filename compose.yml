@@ -1,8 +1,6 @@
 services:
   bahnhof-server:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ghcr.io/tramlines-pt/bahnhof-server:main
     ports:
       - "3000:3000"
     command: ["pnpm", "start"]
