@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  tramlines-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+    command: ["pnpm", "start"]
+    restart: always
+    environment:
+      DB_CLIENT_ID: "client_id"
+      DB_CLIENT_SECRET: "client_secret"
