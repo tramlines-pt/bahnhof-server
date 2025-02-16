@@ -47,6 +47,7 @@ router.get('/', async (req, res) => {
         cachedStations = await fetchStations();
         saveCache(cachedStations);
       } catch (error) {
+        //console.log(error);
         return res.status(500).send('Error fetching stations');
       }
     }
@@ -56,6 +57,7 @@ router.get('/', async (req, res) => {
     const lat = parseFloat(req.query.lat);
     const lon = parseFloat(req.query.lon);
     const radius = parseFloat(req.query.radius);
+    const limit = parseInt(req.query.limit);
   
     let filteredStations = {};
   
@@ -99,23 +101,35 @@ router.get('/', async (req, res) => {
         return R * c;
       };
   
-      filteredStations = Object.values(filteredStations).filter(station => {
-        try {
-            const [stationLon, stationLat] = station.evaNumbers[0].geographicCoordinates.coordinates;
-            const distance = haversineDistance(lat, lon, stationLat, stationLon);
-            return distance <= radius;
-        } catch (error) {
-            return false;
+      // Map stations to include their distance:
+      let stationsWithDistance = Object.values(filteredStations).map(station => {
+        const [stationLon, stationLat] = station.evaNumbers?.[0]?.geographicCoordinates?.coordinates || [NaN, NaN];
+        if (isNaN(stationLat) || isNaN(stationLon)) {
         }
-      }).reduce((acc, station) => {
+        const distance = haversineDistance(lat, lon, stationLat, stationLon);
+        return { ...station, distance };
+      });
+  
+      // Filter based on the radius, sort by distance:
+      stationsWithDistance = stationsWithDistance
+        .filter(station => station.distance <= radius)
+        .sort((a, b) => a.distance - b.distance);
+  
+      // Apply limit if provided:
+      if (!isNaN(limit)) {
+        stationsWithDistance = stationsWithDistance.slice(0, limit);
+      }
+  
+      // Rebuild filteredStations as an object indexed by station number:
+      filteredStations = stationsWithDistance.reduce((acc, station) => {
         acc[station.number] = station;
         return acc;
       }, {});
     }
-  
+
     res.json(filteredStations);
   });
-
+  
 router.get('/:id', async (req, res) => {
     const stationId = req.params.id;
     let cachedStations = loadCache();
