@@ -77,9 +77,9 @@ router.get('/', async (req, res) => {
     if (searchString) {
       const searchPatterns = searchString.split(',').map(pattern => {
         const regexPattern = pattern.replace(/\*/g, '.*').replace(/\?/g, '.');
-        return new RegExp(`^${regexPattern}$`, 'i');
+        return new RegExp(regexPattern, 'i'); // removed ^ and $ to allow partial matches.
       });
-  
+    
       filteredStations = Object.values(filteredStations).filter(station => {
         return searchPatterns.some(pattern => pattern.test(station.name));
       }).reduce((acc, station) => {
