@@ -28,6 +28,7 @@ router.get('/:evaNo/:journeyId', async (req, res) => {
             timeSchedule: entry[0].timeSchedule,
             timeDelayed: entry[0].timeDelayed,
             platform: entry[0].platform,
+            type: entry[0].type,
             stops: stops,
         };
 
