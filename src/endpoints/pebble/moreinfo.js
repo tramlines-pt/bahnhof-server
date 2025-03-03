@@ -22,6 +22,11 @@ router.get('/:evaNo/:journeyId', async (req, res) => {
             stop.name,
         ]));
 
+        stops.push([
+            entry[0].destination.evaNumber,
+            entry[0].destination.name
+        ])
+
         let response = {
             lineName: entry[0].lineName,
             destination: formatDestination(entry[0].destination),
