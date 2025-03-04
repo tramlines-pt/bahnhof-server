@@ -8,7 +8,7 @@ router.get('/:evaNo', async (req, res) => {
     const evaNo = req.params.evaNo;
 
     try {
-        const planResponse = await axios.get(`http://localhost:${port}/current/${evaNo}?duration=120`);
+        const planResponse = await axios.get(`http://localhost:${port}/current/${evaNo}`);
         // First filter out unwanted entries
         let filteredEntries = planResponse.data.entries.filter(entry => {
             // Keep only if it's a departure AND not cancelled AND not BUS AND not TRAM
