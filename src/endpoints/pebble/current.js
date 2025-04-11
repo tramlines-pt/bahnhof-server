@@ -21,7 +21,7 @@ router.get('/:evaNo', async (req, res) => {
         let response = filteredEntries.map(entry => ([
             entry[0].journeyID,
             entry[0].type,
-            entry[0].lineName,
+            cleanLineName(entry[0].lineName),
             formatDestination(entry[0].destination),
             entry[0].timeDelayed,
             entry[0].platform,
@@ -33,6 +33,13 @@ router.get('/:evaNo', async (req, res) => {
         return res.status(500).send('Error fetching plan');
     }
 });
+
+function cleanLineName(lineName) {
+    // First remove spaces, then remove any non-ASCII characters
+    return lineName
+        .replace(/\s+/g, '')
+        .replace(/[^\x00-\x7F]/g, '');
+}
 
 function formatDestination(destination) {
     if (!destination || !destination.nameParts) {
